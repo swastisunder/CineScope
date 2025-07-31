@@ -28,6 +28,10 @@ export default function MoviesInfo() {
           <div className="w-full md:w-1/3">
             <img
               src={movie.poster}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/posters/error.jpg";
+              }}
               alt={movie.title}
               className="rounded-xl shadow-lg w-full"
             />
@@ -45,7 +49,7 @@ export default function MoviesInfo() {
 
               {/* Genre badges */}
               <div className="flex flex-wrap gap-2 mb-4">
-                {movie.genre.split(", ").map((g, idx) => (
+                {movie.genres?.split(", ").map((g, idx) => (
                   <span
                     key={idx}
                     className="px-3 py-1 bg-white/20 text-sm rounded-full"
