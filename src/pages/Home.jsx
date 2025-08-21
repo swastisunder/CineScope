@@ -44,7 +44,7 @@ export default function Home() {
     <main className="w-[90%] mx-auto py-8 text-white">
       <section className="rounded-2xl border border-cyan-700/40 bg-gradient-to-br from-cyan-900/20 via-cyan-700/5 to-transparent px-6 py-10 text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          🎬 Welcome to <span className="text-cyan-300">CineScope</span>
+          🎬 Welcome to Hare Krishna <span className="text-cyan-300">CineScope</span>
         </h1>
         <p className="text-base md:text-lg italic text-white/80 mt-3 max-w-2xl mx-auto">
           {quote}
