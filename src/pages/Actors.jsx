@@ -64,7 +64,7 @@ export default function Actors() {
         🎭 Actor's Filmography
       </h1>
       <h2 className="text-2xl font-semibold text-center mb-10">
-        Showing {totalMovies} movie(s) featuring "{selectedActor}"
+        Showing {totalMovies} movies featuring "{selectedActor}"
       </h2>
 
       <div className="flex flex-wrap justify-center gap-6">
