@@ -6,8 +6,9 @@ import {
   useDeferredValue,
   startTransition,
 } from "react";
+import useDebounce from "../hooks/useDebounce";
+import useThrottle from "../hooks/useThrottle";
 import MovieCard from "../components/MoviesCard";
-import MoviesData from "../assets/JSON/movies.json";
 import { Link, useSearchParams } from "react-router-dom";
 import Fuse from "fuse.js";
 
@@ -17,7 +18,7 @@ function Movies() {
   const [moviesData, setMoviesData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 350);
   const deferredSearch = useDeferredValue(debouncedSearch);
   const [selectedGenres, setSelectedGenres] = useState([]); // array of strings
   const [minRating, setMinRating] = useState(0);
@@ -27,7 +28,16 @@ function Movies() {
 
   // Load data and initialize from URL
   useEffect(() => {
-    setMoviesData(MoviesData);
+    let mounted = true;
+    async function load() {
+      const mod = await import("../assets/JSON/movies.json");
+      if (!mounted) return;
+      setMoviesData(mod.default || mod);
+    }
+    load();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -39,8 +49,7 @@ function Movies() {
     const sort = searchParams.get("sort") || "relevance";
     const pageFromUrl = parseInt(searchParams.get("page") || "1", 10) - 1;
 
-    setSearch(q);
-    setDebouncedSearch(q);
+  setSearch(q);
     setSelectedGenres(genres);
     setMinRating(Number.isNaN(rating) ? 0 : rating);
     setSortBy(
@@ -66,14 +75,7 @@ function Movies() {
     setSearchParams(params, { replace: true });
   }, [search, selectedGenres, minRating, sortBy, currentPage, setSearchParams]);
 
-  // Debounce search input
-  useEffect(() => {
-    const handle = setTimeout(
-      () => setDebouncedSearch(search.trim().toLowerCase()),
-      350
-    );
-    return () => clearTimeout(handle);
-  }, [search]);
+  // search is debounced via useDebounce above
 
   // Extract unique genres for filter chips
   const allGenres = useMemo(() => {
@@ -159,13 +161,19 @@ function Movies() {
   const start = currentPage * moviesPerPage;
   const end = start + moviesPerPage;
 
-  const handlePageChange = useCallback((n) => setCurrentPage(n), []);
-  const handlePrevPage = useCallback(() => {
+  // throttle page changes to avoid excessive re-renders when clicking rapidly
+  const _setPage = useCallback((n) => setCurrentPage(n), []);
+  const handlePageChange = useThrottle((n) => _setPage(n), 200);
+
+  const _prev = useCallback(() => {
     setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
   }, []);
-  const handleNextPage = useCallback(() => {
+  const handlePrevPage = useThrottle(_prev, 200);
+
+  const _next = useCallback(() => {
     setCurrentPage((prev) => (prev < numOfPages - 1 ? prev + 1 : prev));
   }, [numOfPages]);
+  const handleNextPage = useThrottle(_next, 200);
 
   const handleSearchChange = useCallback((e) => {
     const next = e.target.value;

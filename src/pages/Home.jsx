@@ -1,22 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
 import MovieCard from "../components/MoviesCard";
-import MovieData from "../assets/JSON/movies.json";
 import { Link } from "react-router-dom";
 
-const quotes = [];
-for (const movie of MovieData) {
-  if (movie.tagline && movie.title && movie.rating >= 9) {
-    quotes.push(`"${movie.tagline}" - ${movie.title}`);
-  }
-}
+let quotes = [];
+let highRatedMovies = [];
 
-// Pre-compute high rated movies once to avoid filtering on every interval tick
-const highRatedMovies = MovieData.filter((movie) => movie.rating >= 7);
+// We'll dynamically load MovieData on mount to keep main bundle small
 
 export default function Home() {
   const [randomMovies, setRandomMovies] = useState([]);
   const [quote, setQuote] = useState("");
-
   const getRandomMovies = useCallback((count) => {
     // Sample without replacement using a shallow copy and partial Fisher–Yates shuffle
     const copy = highRatedMovies.slice();
@@ -29,16 +22,36 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    setRandomMovies(getRandomMovies(5));
-    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    let mounted = true;
+    async function loadData() {
+      const mod = await import("../assets/JSON/movies.json");
+      if (!mounted) return;
+      const MovieData = mod.default || mod;
+      quotes = [];
+      for (const movie of MovieData) {
+        if (movie.tagline && movie.title && movie.rating >= 9) {
+          quotes.push(`"${movie.tagline}" - ${movie.title}`);
+        }
+      }
+      highRatedMovies = MovieData.filter((movie) => movie.rating >= 7);
 
+      setRandomMovies(getRandomMovies(5));
+      setQuote(quotes.length ? quotes[Math.floor(Math.random() * quotes.length)] : "");
+    }
+
+    loadData();
     const interval = setInterval(() => {
       setRandomMovies(getRandomMovies(5));
-      setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+      setQuote(quotes.length ? quotes[Math.floor(Math.random() * quotes.length)] : "");
     }, 60000);
 
-    return () => clearInterval(interval);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
   }, [getRandomMovies]);
+
+  
 
   return (
     <main className="w-[90%] mx-auto py-8 text-white">
