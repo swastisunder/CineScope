@@ -82,7 +82,7 @@ export default function Home() {
         <h2 className="text-xl md:text-2xl font-semibold mb-4">
           Top picks for you
         </h2>
-        <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 justify-center">
           {randomMovies.map((movie) => (
             <Link to={`/movies/${movie.id}`} key={movie.id}>
               <MovieCard

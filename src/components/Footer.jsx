@@ -70,22 +70,17 @@ export default function Footer() {
           </p>
           <div className="flex gap-2 sm:gap-3 text-base sm:text-lg justify-center sm:justify-start flex-wrap">
             <a
-              href="https://www.instagram.com/swasti.305/"
+              href="https://www.moctale.in/u/swastisunder"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="px-2 sm:px-3 py-2 rounded-xl border border-white/10 hover:border-cyan-400/40 hover:text-cyan-300 transition"
+              aria-label="Moctale"
+              className="px-2 sm:px-3 py-2 rounded-xl border border-white/10 hover:border-cyan-400/40 hover:text-cyan-300 transition flex items-center justify-center"
             >
-              <i className="fa-brands fa-instagram"></i>
-            </a>
-            <a
-              href="https://x.com/swastisundr"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="X / Twitter"
-              className="px-2 sm:px-3 py-2 rounded-xl border border-white/10 hover:border-cyan-400/40 hover:text-cyan-300 transition"
-            >
-              <i className="fa-brands fa-x-twitter"></i>
+              <img
+                src="https://www.moctale.in/favicon.ico"
+                alt="Moctale"
+                className="w-4 h-4 sm:w-5 sm:h-5"
+              />
             </a>
             <a
               href="https://letterboxd.com/swastisunder/"
@@ -97,6 +92,15 @@ export default function Footer() {
               <i className="fa-brands fa-letterboxd"></i>
             </a>
             <a
+              href="https://github.com/swastisunder"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="px-2 sm:px-3 py-2 rounded-xl border border-white/10 hover:border-cyan-400/40 hover:text-cyan-300 transition"
+            >
+              <i className="fa-brands fa-github"></i>
+            </a>
+            <a
               href="https://www.linkedin.com/in/swastisunder/"
               target="_blank"
               rel="noopener noreferrer"
@@ -106,13 +110,13 @@ export default function Footer() {
               <i className="fa-brands fa-linkedin"></i>
             </a>
             <a
-              href="https://github.com/swastisunder"
+              href="https://x.com/swastisundr"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="GitHub"
+              aria-label="X / Twitter"
               className="px-2 sm:px-3 py-2 rounded-xl border border-white/10 hover:border-cyan-400/40 hover:text-cyan-300 transition"
             >
-              <i className="fa-brands fa-github"></i>
+              <i className="fa-brands fa-x-twitter"></i>
             </a>
           </div>
         </div>

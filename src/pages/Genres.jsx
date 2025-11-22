@@ -152,9 +152,11 @@ export default function Genres() {
 </div>
 
 
-      <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 justify-center">
         {moviesToShow.length === 0 ? (
-          <p className="text-white/80">No movies found.</p>
+          <div className="col-span-full flex justify-center">
+            <p className="text-white/80">No movies found.</p>
+          </div>
         ) : (
           moviesToShow.slice(start, end).map((movie) => (
             <Link to={`/movies/${movie.id}`} key={movie.id}>

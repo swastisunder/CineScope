@@ -5,6 +5,7 @@ import {
   useMemo,
   useDeferredValue,
   startTransition,
+  useRef,
 } from "react";
 import useDebounce from "../hooks/useDebounce";
 import useThrottle from "../hooks/useThrottle";
@@ -23,6 +24,7 @@ function Movies() {
   const [selectedGenres, setSelectedGenres] = useState([]); // array of strings
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState("relevance"); // relevance | rating | year_desc | title_asc
+  const genreSelectRef = useRef(null);
 
   const moviesPerPage = 10;
 
@@ -324,9 +326,68 @@ function Movies() {
             </div>
           </div>
         </div>
-        {/* Genres as chips */}
+        
+        {/* Mobile: Genre Dropdown */}
         {allGenres.length > 0 && (
-          <div className="mt-3 flex items-center gap-2 flex-wrap justify-center md:justify-start">
+          <div className="md:hidden mt-3">
+            <label className="block text-white/80 text-sm mb-2">Filter by Genre:</label>
+            <select
+              ref={genreSelectRef}
+              defaultValue=""
+              onChange={(e) => {
+                const genre = e.target.value;
+                if (genre) {
+                  toggleGenre(genre);
+                  // Reset dropdown after selection
+                  if (genreSelectRef.current) {
+                    genreSelectRef.current.value = "";
+                  }
+                }
+              }}
+              className="w-full px-4 py-2.5 rounded-xl bg-[#181f2a] border border-white/10 text-white text-sm focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition appearance-none shadow-sm"
+            >
+              <option value="">Select a genre to filter...</option>
+              {allGenres.map((genre) => (
+                <option key={genre} value={genre} className="bg-[#181f2a] text-white">
+                  {genre} {selectedGenres.includes(genre) ? '✓' : ''}
+                </option>
+              ))}
+            </select>
+            
+            {/* Show selected genres as chips */}
+            {selectedGenres.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2 items-center">
+                <span className="text-xs text-white/70">Selected:</span>
+                {selectedGenres.map((genre) => (
+                  <button
+                    key={genre}
+                    onClick={() => toggleGenre(genre)}
+                    className="px-3 py-1 rounded-full text-xs bg-cyan-500/20 text-cyan-200 border border-cyan-500/40 hover:bg-cyan-500/30 transition flex items-center gap-1"
+                  >
+                    {genre}
+                    <span className="text-cyan-300">×</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            {/* Clear filters button for mobile */}
+            {(selectedGenres.length > 0 ||
+              minRating > 0 ||
+              sortBy !== "relevance") && (
+              <button
+                onClick={clearFilters}
+                className="mt-3 w-full px-4 py-2 rounded-xl text-sm bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 transition"
+              >
+                Clear all filters
+              </button>
+            )}
+          </div>
+        )}
+        
+        {/* Desktop: Genres as chips */}
+        {allGenres.length > 0 && (
+          <div className="hidden md:flex mt-3 items-center gap-2 flex-wrap justify-center">
             {allGenres.slice(0, 24).map((g) => {
               const active = selectedGenres.includes(g);
               return (
@@ -359,7 +420,7 @@ function Movies() {
       </div>
 
       {/* Movie Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center">
         {moviesToShow.length === 0 ? (
           <div className="col-span-full flex flex-col items-center py-16">
             <span className="text-5xl mb-4">🎬</span>
